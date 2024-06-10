@@ -1,15 +1,14 @@
-## Lib Str: A versatile C library for efficient manipulation of character arrays.
+## LibStr: A versatile C library for efficient manipulation of character arrays.
 
-This C library provides provides a comprehensive set of functions for common string operations including concatenation, splitting, searching, and more. The library also includes utility functions for checking numeric tokens and converting integers to strings. Simplify your string handling tasks with this collection of versatile functions designed to streamline your C programming experience.
+LibStr is a comprehensive C library designed to facilitate efficient manipulation of character arrays. It provides a robust set of functions for common string operations, such as concatenation, splitting, searching, and more. Additionally, the library includes utility functions for checking numeric tokens and converting integers to strings. Streamline your string handling tasks and enhance your C programming experience with this versatile and powerful collection of functions.
 
 ### Key Features
 
-- Navigate through tokens in a string.
-- Extract substrings, numbers, and boolean values from strings.
-- Append strings and values to the tokenizer buffer.
-- Check and expand tokenizer buffer capacity.
-- Check numeric tokens.
-- Convert integers to strings.
+- **String Concatenation**: Easily concatenate multiple strings.
+- **String Splitting**: Split strings based on specified delimiters.
+- **String Searching**: Search for substrings within larger strings.
+- **Numeric Token Checking**: Determine if characters are numeric.
+- **Integer to String Conversion**: Convert integer values to string representations.
 
 ### Prerequisites
 
