@@ -44,7 +44,7 @@ the most current stable version is `1.0.0`.
    you can run:
 
     ```bash
-    ldconfig -p | grep file
+    ldconfig -p | grep str
     ```
 
 3. Copy the library header file(`strutils.h`) to where it can be included in one of the C compiler's search path.
@@ -67,7 +67,7 @@ the most current stable version is `1.0.0`.
    your C project:
 
     ```bash
-    gcc -o tester tester.c -lactivation
+    gcc -o tester tester.c -lstr
     ```
 
 ##### Compiling the Code
@@ -75,7 +75,7 @@ the most current stable version is `1.0.0`.
 To compile your program, you might use a command like this, depending on your setup:
 
 ```bash
-gcc -o my_program my_program.c -lstrutils
+gcc -o my_program my_program.c -lstr
 ```
 
 Replace `my_program.c` with the name of your source file. Make sure that the libfile is correctly linked.

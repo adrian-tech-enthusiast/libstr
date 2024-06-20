@@ -270,6 +270,8 @@ int st_append_string(struct StringTokenizer *tokenizer, const char *string) {
     tokenizer->position++;
     index++;
   }
+  // Zero/null terminate the tokenizer string.
+  tokenizer->string[tokenizer->position] = '\0';
   // Append string completed.
   return 1;
 }
