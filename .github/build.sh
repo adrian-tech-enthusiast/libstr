@@ -1,57 +1,65 @@
-#!/usr/bin/sh
+#!/bin/bash
+#
+# @file build.sh
+# @brief Script to build the main application and create libraries.
+#
+# This script sets up the environment and builds the main application executable
+# and the associated shared and static libraries. It uses helper functions defined
+# in helper.sh for various build-related tasks.
+#
+# @usage
+# Run this script from the root of your project:
+#   ./build.sh;
+#
+# Global settings:
+# - BASE_NAME: Base name for the project.
+# - PROJECT_PATH: Root path of the project.
+# - TEST_DEPENDENCIES: Dependencies for tests.
+# - LIBRARY_DEPENDENCIES: Dependencies for libraries.
+# - LIBRARY_CODE_SEARCH_PATHS: Search paths for library code.
+# - TEST_CODE_SEARCH_PATHS: Search paths for test code.
+# - BASE_BUILD_PATH: Base build directory.
+# - LIBRARY_BUILD_PATH: Build directory for libraries.
+# - TEST_BUILD_PATH: Build directory for tests.
+# - BIN_PATH: Output directory for binaries.
+# - APP_NAME: Name of the main application.
+
+# Determine the directory of the script
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")");
+# Load helper functions
+source "$SCRIPT_DIR/helper.sh";
 
 # Global Settings.
-BASE_NAME='libstr';
-PROJECT_PATH=$(pwd);
-CODE_SEARCH_PATHS="$PROJECT_PATH/include $PROJECT_PATH/src $PROJECT_PATH/tests"; # The subdirectories that will contain all you source files (*.h, *.hpp, *.c, *.cpp, etc.)
-BUILD_PATH="$PROJECT_PATH/build"; # This is the subdirectory where the compiler will create the binary files and the final executable.
+BASE_NAME='libstr';   # Base name for the project.
+PROJECT_PATH=$(pwd);  # Root path of the project.
+
+# Dependencies for tests and library (add as needed).
+TEST_DEPENDENCIES='';
+LIBRARY_DEPENDENCIES='';
+
+# Search paths for library and test code.
+LIBRARY_CODE_SEARCH_PATHS="$PROJECT_PATH/include $PROJECT_PATH/src";
+TEST_CODE_SEARCH_PATHS="$LIBRARY_CODE_SEARCH_PATHS $PROJECT_PATH/tests";
+
+# Build paths.
+BASE_BUILD_PATH="$PROJECT_PATH/build";
+LIBRARY_BUILD_PATH="$BASE_BUILD_PATH/library";
+TEST_BUILD_PATH="$BASE_BUILD_PATH/test";
+
+# Output paths.
 BIN_PATH="$PROJECT_PATH/bin";
 APP_NAME="$BASE_NAME.app";
-APP_FILE="$BUILD_PATH/$APP_NAME";
 
-# Get the code files to compile.
-HEADER_FILES_TO_COMPILE=$(find $CODE_SEARCH_PATHS -maxdepth 3 -type f -name "*.h" -not -path '*/\.*' | sed 's/^\.\///g' | sort);
-SOURCE_FILES_TO_COMPILE=$(find $CODE_SEARCH_PATHS -maxdepth 3 -type f -name "*.c" -not -path '*/\.*' | sed 's/^\.\///g' | sort);
-FILES_TO_COMPILE="$HEADER_FILES_TO_COMPILE $SOURCE_FILES_TO_COMPILE";
+# Clean up build directory before start the build.
+clean_directory "$BASE_BUILD_PATH";
 
-# Go to the project folder.
-cd $PROJECT_PATH;
+# Build the main app.
+app_files_to_compile=$(get_files_to_compile "$TEST_CODE_SEARCH_PATHS");
+build_app "$app_files_to_compile" $TEST_BUILD_PATH $APP_NAME "$TEST_DEPENDENCIES" $BIN_PATH;
 
-# Clean up build and bin folder.
-rm -rf $BUILD_PATH && mkdir -p $BUILD_PATH;
-rm -rf $BIN_PATH && mkdir -p $BIN_PATH;
+# Create shared and static libraries.
+library_files_to_compile=$(get_files_to_compile "$LIBRARY_CODE_SEARCH_PATHS");
+create_libraries "$library_files_to_compile" $LIBRARY_BUILD_PATH $BASE_NAME "$LIBRARY_DEPENDENCIES" $BIN_PATH;
 
-# Build the project.
-cd $BUILD_PATH;
-
-gcc -O3 -march=native -g -fpic -save-temps -Wall -Werror -pedantic-errors -o $APP_NAME $FILES_TO_COMPILE;
-if [ $? -ne 0 ]
-then
-  echo "Compile Failed!"
-  exit 1
-fi
-
-# Give executable permissions to the APP.
-if [ -f "$APP_FILE" ]; then
-  chmod +w $APP_FILE;
-fi
-
-# Get list of object files in the build directory.
-OBJ_FILES=$(find . -type f -name "*.o" -not -path '*/\.*' | sed 's/^\.\///g' | sort);
-
-# Create single shared library file from the object module(s)
-gcc -shared -Wl,-soname,$BASE_NAME.so -o $BASE_NAME.so $OBJ_FILES;
-
-# Create the static library (archive) from the the object files using the ar tool.
-ar rcs $BASE_NAME.a $OBJ_FILES;
-
-# Move executables and libraries files to the bin directory.
-mv $APP_NAME $BIN_PATH;
-mv $BASE_NAME.so $BIN_PATH;
-mv $BASE_NAME.a $BIN_PATH;
-
-# Go back to the root of the project.
-cd $PROJECT_PATH;
-
-## Test the APP execution.
-$BIN_PATH/$APP_NAME;
+# Test the APP execution.
+"$BIN_PATH/$APP_NAME";

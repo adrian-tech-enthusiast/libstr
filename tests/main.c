@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../include/strutils.h"
-#include "itos_unit_tests.h"
+#include "numeric_string_unit_tests.h"
 
 /**
  * Main Unit Testing controller function.
@@ -15,7 +15,7 @@
  *   The constant that represent the exit status.
  */
 int main(int argc, char const *argv[]) {
-  if (run_itos_unit_tests() == EXIT_FAILURE) {
+  if (run_numeric_string_tests() == EXIT_FAILURE) {
     // Unit tests failed.
     return EXIT_FAILURE;
   }

@@ -249,8 +249,8 @@ static inline int is_numeric(const char token) {
 
 #endif /* IS_NUMERIC_H */
 
-#ifndef INTEGER_TO_STRING_H
-#define INTEGER_TO_STRING_H
+#ifndef NUMERIC_STRING_H
+#define NUMERIC_STRING_H
 
 /**
  * Converts an integer into a numeric string.
@@ -260,7 +260,31 @@ static inline int is_numeric(const char token) {
  *
  * @return char*
  *   A pointer to the resulting numeric string, or NULL on failure.
+ *   The caller is responsible for freeing the allocated memory.
  */
 char *itos(int value);
 
-#endif /* INTEGER_TO_STRING_H */
+/**
+ * Converts a long double into a numeric string.
+ *
+ * @param long double value
+ *   The long double value to convert.
+ *
+ * @return char*
+ *   A pointer to the resulting numeric string, or NULL on failure.
+ *   The caller is responsible for freeing the allocated memory.
+ */
+char *ldtos(long double value);
+
+/**
+ * Converts a numeric string into a long double.
+ *
+ * @param char *numeric_string
+ *   A pointer to the null-terminated numeric string to convert.
+ *
+ * @return long double
+ *   The resulting long double. If the conversion fails, returns 0 and sets errno appropriately.
+ */
+long double stold(const char *numeric_string);
+
+#endif /* NUMERIC_STRING_H */
