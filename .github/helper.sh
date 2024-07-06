@@ -16,6 +16,8 @@
 # - clean_directory: Cleans up a specified directory.
 # - build_app: Builds the main application executable.
 # - create_libraries: Creates shared and static libraries from source files.
+# - install_library_localy: Installs shared libraries and header files locally.
+
 
 # Function to get the list of code files to compile.
 #
@@ -147,4 +149,49 @@ create_libraries() {
 
   # Go back to where we were before.
   cd "$current_path" || exit;
+}
+
+# Function to installs shared libraries and header files locally.
+#
+# Arguments:
+#   $1: Path to the directory containing shared library files (*.so).
+#   $2: Path to the directory containing header files (*.h).
+#
+# Usage:
+#   install_library_localy "/path/to/libraries" "/path/to/headers";
+install_library_localy() {
+  # Get arguments.
+  local bin_path="$1"
+  local include_path="$2"
+
+  # Check if paths are provided
+  if [[ -z "$bin_path" || -z "$include_path" ]]; then
+    echo "Error: Both library and header paths must be provided.";
+    exit 1;
+  fi
+
+  # Ensure the script has appropriate privileges.
+  if [[ $EUID -ne 0 ]]; then
+    echo "Error: This script must be run as root to install libraries."
+    exit 1
+  fi
+
+  # Install shared library files to "/usr/local/lib" folder.
+  local library_files=$(find "$bin_path" -maxdepth 3 -type f -name "*.so" ! -path '*/\.*' | sort);
+  for file in $library_files; do
+    # Extract the name of the .so file and print a friendly message.
+    library_name=$(basename "$file");
+    echo "Installing $library_name library into '/usr/local/lib/'..."
+    # Install the library.
+    cp "$file" /usr/local/lib/;
+  done
+
+  # Install header files to /usr/local/include.
+  local include_files=$(find "$include_path" -maxdepth 3 -type f -name "*.h" ! -path '*/\.*' | sort);
+  for file in $include_files; do
+    # Extract the name of the .h file and print a friendly message.
+    header_name=$(basename "$file");
+    echo "Installing $header_name header into '/usr/local/include/'..."
+    cp "$file" /usr/local/include/;
+  done
 }
