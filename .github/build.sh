@@ -61,5 +61,8 @@ build_app "$app_files_to_compile" $TEST_BUILD_PATH $APP_NAME "$TEST_DEPENDENCIES
 library_files_to_compile=$(get_files_to_compile "$LIBRARY_CODE_SEARCH_PATHS");
 create_libraries "$library_files_to_compile" $LIBRARY_BUILD_PATH $BASE_NAME "$LIBRARY_DEPENDENCIES" $BIN_PATH;
 
+# Clean precompiled header files from the project directories.
+clean_project_precompiled_headers "$PROJECT_PATH" > /dev/null;
+
 # Test the APP execution.
 "$BIN_PATH/$APP_NAME";

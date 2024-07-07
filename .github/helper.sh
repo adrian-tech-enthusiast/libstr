@@ -17,6 +17,8 @@
 # - build_app: Builds the main application executable.
 # - create_libraries: Creates shared and static libraries from source files.
 # - install_library_localy: Installs shared libraries and header files locally.
+# - remove_precompiled_headers: Removes precompiled header files from a specified directory.
+# - clean_project_precompiled_headers: Cleans precompiled header files from the project directories.
 
 
 # Function to get the list of code files to compile.
@@ -194,4 +196,49 @@ install_library_localy() {
     echo "Installing $header_name header into '/usr/local/include/'..."
     cp "$file" /usr/local/include/;
   done
+}
+
+# Function to remove precompiled header files from a specified directory.
+#
+# Arguments:
+#   $1: Path to the directory to clean.
+#
+# Usage:
+#   remove_precompiled_headers "/path/to/directory";
+remove_precompiled_headers() {
+   # Get arguments.
+   local dir_path="$1";
+
+   # Ger the list of precompiled header files to remove.
+   local precompiled_files=$(find "$dir_path" -maxdepth 3 -type f -name "*.h.gch" ! -path '*/\.*' | sort);
+
+   # Remove precompiled header files.
+   for file in $precompiled_files; do
+     local precompiled_file_name=$(basename "$file");
+     echo "Removing precompiled header file $precompiled_file_name from $dir_path...";
+     rm -rf "$file";
+   done
+}
+
+# Function to clean precompiled header files from the project directories.
+#
+# Arguments:
+#   $1: Path to the root of the project.
+#
+# Usage:
+#   clean_project_precompiled_headers "/path/to/project";
+clean_project_precompiled_headers() {
+  # Get arguments.
+  local project_path=$1;
+
+  # Validate the project path argument.
+  if [[ -z "$project_path" ]]; then
+    echo "Error: Project path must be provided.";
+    exit 1;
+  fi
+
+  # Remove precompiled header files from specified directories.
+  remove_precompiled_headers "$project_path/src";
+  remove_precompiled_headers "$project_path/include";
+  remove_precompiled_headers "$project_path/tests";
 }
