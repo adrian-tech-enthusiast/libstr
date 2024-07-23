@@ -23,13 +23,13 @@ its [official Github repository](https://github.com/adrian-tech-enthusiast/libst
 
 First, confirm the latest version available in
 their [releases page](https://github.com/adrian-tech-enthusiast/libstr/releases). At the time of this writing,
-the most current stable version is `1.0.0`.
+the most current stable version is `1.1.0`.
 
-1. The following command will download the `1.0.0` release and save the shared library file at
+1. The following command will download the `1.1.0` release and save the shared library file at
    /usr/local/lib/libstr.so, which will make this library globally accessible to clients:
 
     ```bash
-    sudo curl -L "https://github.com/adrian-tech-enthusiast/libstr/releases/download/v1.0.0/libstr.so" -o /usr/local/lib/libstr.so
+    sudo curl -L "https://github.com/adrian-tech-enthusiast/libstr/releases/download/v1.1.0/libstr.so" -o /usr/local/lib/libstr.so
     ```
 
 2. Next, We need to tell the loader it is available for use, so let us update the cache, invoke the `ldconfig` utility,
@@ -51,7 +51,7 @@ the most current stable version is `1.0.0`.
    Typical locations are `/usr/include` and `/usr/local/include`;
 
     ```bash
-    sudo curl -L "https://raw.githubusercontent.com/adrian-tech-enthusiast/libstr/v1.0.0/include/strutils.h" -o /usr/local/include/strutils.h;
+    sudo curl -L "https://raw.githubusercontent.com/adrian-tech-enthusiast/libstr/v1.1.0/include/strutils.h" -o /usr/local/include/strutils.h;
     ```
 
    This allows the library header file to be included in your C project as follows:
